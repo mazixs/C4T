@@ -1,0 +1,705 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Основные цвета */
+  --foreground-rgb: 23, 37, 84;
+  --background-rgb: 248, 250, 252;
+  
+  /* Цвета для светлой темы */
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --secondary-color: #64748b;
+  --secondary-hover: #475569;
+  --success-color: #10b981;
+  --success-hover: #059669;
+  --danger-color: #ef4444;
+  --danger-hover: #dc2626;
+  
+  /* Тени и границы */
+  --card-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.1), 0 2px 10px -1px rgba(0, 0, 0, 0.05);
+  --border-radius: 0.5rem;
+  --border-color: #e2e8f0;
+}
+
+/* ОБЯЗАТЕЛЬНЫЕ СТИЛИ - ПЕРЕЗАПИСЫВАЮТ ВСЕ ОСТАЛЬНЫЕ */
+.operation-button.active {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+  text-shadow: none !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px #93c5fd !important;
+}
+
+.btn-primary {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.btn-secondary {
+  background-color: #64748b !important;
+  color: white !important;
+}
+
+.btn-success {
+  background-color: #10b981 !important;
+  color: white !important;
+}
+
+/* КОНЕЦ ОБЯЗАТЕЛЬНЫХ СТИЛЕЙ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-rgb: 15, 23, 42;
+    --primary-color: 59, 130, 246;
+    --secondary-color: 139, 92, 246;
+    --danger-color: 248, 113, 113;
+    --success-color: 34, 197, 94;
+    --border-color: 71, 85, 105;
+    --hover-background: 30, 41, 59;
+    --input-background: 30, 41, 59;
+    --card-background: 17, 24, 39;
+    --accent-color: 251, 191, 36;
+    --button-text: 255, 255, 255;
+  }
+}
+
+/* Принудительные стили для всех кнопок */
+button {
+  font-weight: 500 !important;
+  border-radius: 0.375rem !important;
+  transition: all 0.2s ease-in-out !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Принудительные стили для кнопок операций */
+.operations-container button.operation-button {
+  padding: 0.5rem 1rem !important;
+  margin: 0.25rem !important;
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+/* Принудительные стили для активных операций с повышенной специфичностью */
+.operations-container button.operation-button.active,
+button.operation-button.active,
+.calculator-container .operations-container button.operation-button.active {
+  background-color: #dbeafe !important;
+  color: #1e40af !important;
+  text-shadow: none !important;
+  border-color: #3b82f6 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 0 2px #93c5fd !important;
+}
+
+/* Принудительные стили для основных кнопок */
+.btn.btn-primary,
+button.btn.btn-primary {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  border-color: #2563eb !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn.btn-secondary,
+button.btn.btn-secondary {
+  background-color: #64748b !important;
+  color: white !important;
+  border-color: #475569 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn.btn-success,
+button.btn.btn-success {
+  background-color: #10b981 !important;
+  color: white !important;
+  border-color: #059669 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.btn.btn-danger,
+button.btn.btn-danger {
+  background-color: #ef4444 !important;
+  color: white !important;
+  border-color: #dc2626 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Стили для кнопок при наведении */
+button:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+  
+  html,
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+    color: #1e293b !important;
+    background: #f8fafc !important;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+}
+
+@layer components {
+  /* Кнопки */
+  .btn {
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.25rem;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-hover);
+  }
+  
+  .btn-secondary {
+    background-color: var(--secondary-color);
+  }
+  
+  .btn-secondary:hover {
+    background-color: var(--secondary-hover);
+  }
+  
+  .btn-success {
+    background-color: var(--success-color);
+  }
+  
+  .btn-success:hover {
+    background-color: var(--success-hover);
+  }
+  
+  .btn-danger {
+    background-color: var(--danger-color);
+  }
+  
+  .btn-danger:hover {
+    background-color: var(--danger-hover);
+  }
+  
+  /* SVG иконки в кнопках */
+  .btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+  }
+  
+  /* Карточки */
+  .card {
+    background-color: white !important;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #f1f5f9;
+  }
+  
+  /* Поля ввода */
+  .input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--border-radius);
+    background-color: white !important;
+    font-size: 1rem;
+    color: #0f172a !important;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+  }
+  
+  .input-container {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  
+  .calculator-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.75rem;
+    text-align: center;
+    color: #1e293b !important;
+  }
+  
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    color: #1e293b !important;
+  }
+  
+  /* Операции */
+  .operations-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-bottom: 1rem;
+  }
+  
+  .operation-button {
+    padding: 0.625rem 1rem;
+    background-color: #f8fafc;
+    color: #334155 !important;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .operation-button:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b !important;
+  }
+  
+  .operation-button.active {
+    background-color: #dbeafe !important;
+    color: #1e40af !important;
+    border-color: #3b82f6;
+    font-weight: 600;
+    box-shadow: 0 0 0 2px #93c5fd;
+    text-shadow: none;
+  }
+  
+  /* Строки калькулятора */
+  .input-row {
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s ease-in-out;
+    margin-bottom: 0.75rem;
+  }
+  
+  .input-row.active {
+    background-color: rgba(59, 130, 246, 0.08);
+  }
+  
+  .input-row-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    background-color: #f8fafc;
+    padding: 0.875rem 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .input-row-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #334155 !important;
+    min-width: 130px;
+  }
+  
+  .delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fecaca;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 0;
+    transition: all 0.2s ease-in-out;
+    margin-left: 0.75rem;
+    flex-shrink: 0;
+  }
+  
+  .delete-button:hover {
+    background-color: #fecaca !important;
+    color: #dc2626 !important;
+    transform: scale(1.05);
+  }
+  
+  /* Стиль для кнопки очистки поля */
+  .clear-button {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    margin-left: 5px;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all 0.2s;
+  }
+  
+  .clear-button:hover {
+    background-color: #e5e7eb;
+    color: #4b5563;
+  }
+  
+  .clear-button svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+    background-color: white;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  /* Панель результатов */
+  .result-panel {
+    background-color: #f8fafc !important;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--border-radius);
+    padding: 1.25rem;
+    margin-top: 1.25rem;
+    font-size: 1rem;
+    color: #0f172a !important;
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  .result-panel div {
+    color: #0f172a !important;
+  }
+  
+  /* Панель истории */
+  .history-panel {
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    padding: 1rem;
+    height: 100%;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .history-header h2 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .copy-history-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    color: #374151;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .copy-history-button:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .history-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .history-item {
+    padding: 0.75rem;
+    background-color: white;
+    border-radius: 0.375rem;
+    border-left: 3px solid #3b82f6;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+  }
+  
+  .history-item:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  .history-operation {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.25rem;
+  }
+  
+  .history-expression {
+    font-size: 0.875rem;
+    color: #1f2937;
+    word-break: break-word;
+  }
+  
+  .history-number {
+    display: inline-block;
+    padding: 0.125rem 0.25rem;
+    margin: 0 0.125rem;
+    background-color: #e5e7eb;
+    border-radius: 0.25rem;
+    color: #1e40af;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  
+  .history-number:hover {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+  }
+  
+  .history-empty {
+    text-align: center;
+    color: #6b7280;
+    font-style: italic;
+    padding: 1rem 0;
+  }
+  
+  .copied-message {
+    margin-top: -0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    background-color: #dbeafe;
+    color: #1e40af;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    text-align: center;
+    animation: fadeOut 2s ease-in-out;
+  }
+  
+  @keyframes fadeOut {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  
+  .fixed-tooltip {
+    background-color: white !important;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    min-width: 12rem;
+    max-width: 16rem;
+    z-index: 50;
+    overflow: hidden;
+  }
+  
+  .fixed-tooltip button {
+    padding: 0.625rem 1rem;
+    text-align: left;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #334155 !important;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+  }
+  
+  .fixed-tooltip button:hover {
+    background-color: #f1f5f9;
+    color: var(--primary-color) !important;
+  }
+  
+  .fixed-tooltip svg {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  /* Стили для тултипа */
+  .tooltip {
+    position: fixed !important;
+    z-index: 1000 !important;
+    animation: fadeIn 0.15s ease-out;
+    background-color: white !important;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.15), 0 2px 6px -1px rgba(0, 0, 0, 0.12) !important;
+    border: 1px solid #e2e8f0;
+    padding: 0.75rem;
+    width: max-content;
+    max-width: 300px;
+    min-width: 200px;
+    pointer-events: auto !important;
+    will-change: transform, opacity;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px) translateX(-50%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) translateX(-50%);
+    }
+  }
+  
+  /* Заголовок внутри тултипа */
+  .tooltip-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b !important;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+  
+  /* Контейнер для кнопок тултипа */
+  .tooltip-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    justify-content: center;
+  }
+  
+  .tooltip-button {
+    border: none;
+    background-color: #f8fafc !important;
+    color: #334155 !important;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.25rem;
+    margin: 0.25rem;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+  }
+  
+  .tooltip-button:hover {
+    background-color: #f1f5f9 !important;
+    color: var(--primary-color) !important;
+    border-color: #cbd5e1;
+  }
+  
+  /* Кнопка закрытия тултипа */
+  .tooltip-close {
+    position: absolute;
+    top: 0.25rem;
+    right: 0.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f1f5f9 !important;
+    color: #64748b !important;
+    border: none;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+  }
+  
+  .tooltip-close:hover {
+    background-color: #e2e8f0 !important;
+    color: #475569 !important;
+  }
+  
+  @media (max-width: 768px) {
+    .card, .history-panel {
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .operations-container {
+      gap: 0.375rem;
+    }
+    
+    .operation-button {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+    
+    .input-row-label {
+      min-width: 90px;
+      font-size: 0.8125rem;
+    }
+    
+    .calculator-title, .history-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .fixed-tooltip {
+      max-width: 90vw;
+      min-width: auto;
+    }
+  }
+  
+  .history-link {
+    color: var(--primary-color) !important;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .history-link:hover {
+    text-decoration: none;
+    color: var(--primary-hover) !important;
+  }
+}
