@@ -40,3 +40,5 @@ npm start
 ## Автор
 
 mazix
+
+Лицензия: [MIT License](LICENSE)
